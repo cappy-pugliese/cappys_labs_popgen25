@@ -7,3 +7,11 @@ data/01_muc19_data/plink_muc19_data.nosex
 data/01_muc19_data/plinkoed_muc19_data.ld.gz
 data/01_muc19_data/plinkoed_muc19_data.log
 data/01_muc19_data/plinkoed_muc19_data.nosex
+data/02_lab4/plinkoed_muc19_data.ld.gz
+data/02_lab4/plinkoed_muc19_data.log
+data/02_lab4/plinkoed_muc19_data.nosex
+data/03_lab5/01_plink/plink_muc19_data.bed
+data/03_lab5/01_plink/plink_muc19_data.bim
+data/03_lab5/01_plink/plink_muc19_data.fam
+data/03_lab5/01_plink/plink_muc19_data.log
+data/03_lab5/01_plink/plink_muc19_data.nosex
