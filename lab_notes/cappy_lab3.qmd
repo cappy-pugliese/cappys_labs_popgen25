@@ -1,0 +1,117 @@
+---
+title: "lab3_cappy"
+format: html
+editor: visual
+---
+
+## Lab 3
+
+loading in vcfs
+
+```{r}
+#read in libraries
+#install.packages("readr")
+library(readr)
+library(ggplot2)
+library(vcfR)
+library(scales)
+
+#require("vcfR")
+#require("readr")
+#samples = read_table("labs/data/muc_samples.txt")
+#vcf = read.vcfR("labs/data/muc19_samples.vcf.gz")
+#GT = extract.gt(vcf,element="GT",as.numeric=TRUE)
+```
+
+```{r}
+#getwd()
+vcf = read.vcfR("../PopGen25/labs/data/muc19_subsample.vcf")
+GT = extract.gt(vcf,element="GT",as.numeric=TRUE)
+
+t_vcf = read.vcfR("../PopGen25/labs/data/test_data.vcf")
+t_GT = extract.gt(vcf,element="GT",as.numeric=TRUE)
+```
+
+```{r}
+freq_GT = function(site){
+  clean_row = na.omit(row)
+  num_derived = sum(site)
+  total_sites = 2*length(site)
+  return(num_derived/total_sites)
+}
+
+sample_het = function(site){
+  n = 2*length(site)
+  p = freq_GT(site)
+  h = n/(n-1)*2*p*(1-p)
+  return(h)
+}
+
+#apply(GT,1,freq_GT)
+```
+
+sum(row) / (length(row)\*2)
+
+-   NA columns will mess it up
+
+-   could make a clean row –\> clean_row = na.omit(row)
+
+-   or: sum(row, na.rm=true) / rest of code with ! ...
+
+``` r
+n_obs = function(row) {
+  return(length(row)x2
+  }
+```
+
+samples\$sample_id\[which(samples\$population=="CEU")\]
+
+idx = which(colnames(GT))%in% my_samples)
+
+```{r}
+require(ggplot2)
+require(scales)
+hets = apply(GT,1,sample_het)
+
+ggplot()+geom_histogram(aes(x=hets),bins=50)+
+          labs(x="Heterozygosity",y="Count")+
+          scale_y_continuous(trans="log10")
+```
+
+```{r}
+samples <- read_table("../PopGen25/labs/data/muc_samples.txt")
+
+ceu_inds = samples$sample_id[which(samples$population == "CEU")]
+col_ids = which(colnames(GT) %in% ceu_inds)
+CEU_GT = GT[,col_ids]
+```
+
+```{r}
+subpop_GT = function(GT,samples,pop){
+  ## get the individuals belonging to your population in the `samples` table
+  individs = samples$sample_id[which(samples$population == pop)]
+  col_ids = which(colnames(GT) %in% individs)
+  ## find the columns in GT that match those individuals.
+  sub_GT = GT[,col_ids]
+  return(sub_GT)
+}
+
+CEU_GT = subpop_GT(GT,samples,"CEU")
+MXL_GT = subpop_GT(GT,samples,"MXL")
+YRI_GT = subpop_GT(GT,samples,"YRI")
+```
+
+-   dim() –\> will give you the "dimentions" of the data (how many rows and columns)
+
+```{r}
+dxy_site = function(p1,p2){
+  dxy = p1*(1-p2)+p2*(1-p1)
+  return(dxy)
+}
+```
+
+-   da = dxy - (pi1 + pi2)/2
+
+-   send in dxy plot for homework
+
+-   create an R source document for functions (save time if R crashes and don't want to rerun everything)

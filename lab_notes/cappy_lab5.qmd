@@ -1,0 +1,96 @@
+---
+title: "lab5_cappy"
+format: html
+editor: visual
+---
+
+# Writing unit tests
+
+Creating fake data:
+
+```{r}
+#setwd("/Users/caprinapugliese/Documents/School/Uconn/2024-26_Grad_School/2025-26_Year-2/popgen/labs/cappys_labs")
+
+#Generating test data
+row_invariant = rep(0,10)
+row_invariant2 = rep(1,10)
+one_tenth = c(1,rep(0,9))
+one_half_fst1 = c(rep(0,5),rep(1,5))
+one_half_fst0 = c(0,1,1,1,0,0,1,1,1,0)
+fake_data = rbind(row_invariant,row_invariant2,one_tenth,one_half_fst1,one_half_fst0)
+colnames(fake_data) <- c("A","B","C","D","E","a","b","c","d","e")
+#We also want the rows to have names that work with our code:
+rownames(fake_data) = paste("chr1:",1:5*100,":A:T",sep="")
+write.table(fake_data,file="data/test_data/lab5_fake-data.txt",quote=FALSE)
+pop_file = data.frame(samples=colnames(fake_data),population=c(rep(1,5),rep(2,5)))
+write.table(pop_file,file="data/test_data/lab5_pop-file.txt",row.names=FALSE,quote=FALSE)
+```
+
+creating test code:
+
+```{r}
+#Load in your code
+source("code/lab4_src.R")
+
+#Load in test data
+
+test_data=read.table("data/test_data/lab5_fake-data.txt")
+pops = read.table("data/test_data/lab5_pop-file.txt")
+#These are tests
+#Assuming diploid
+allele_freqs = apply(test_data,1,freq_GT)
+if(all(allele_freqs == c(0,0.5,0.05,0.25,0.3))){
+    print("Diploid freqs ok.")
+} else {
+    print("Diploid freqs broken!")
+}
+#Assuming haploid
+allele_freqs_hap = apply(test_data,1,function(x) freq_GT(x,1))
+if(all(allele_freqs_hap == c(0,1,0.1,0.5,0.6))){
+    print("Diploid freqs ok.")
+} else {
+    print("Diploid freqs broken!")
+}
+
+#And copy more or less the above for every function you write, with output corresponding to what you _should_ get at each locus.
+```
+
+adding in some NA values
+
+```{r}
+#generating NA data
+site_A = c(1,0,NA,1,0,1)
+site_B = c(1,NA,0,1,0,1)
+site_C = c(0,1,1,NA,1,0)
+NA_data = cbind(site_A,site_B,site_C)
+
+#Recreating tests for NA data
+#Assuming diploid
+NA_allele_freqs = apply(NA_data,1,freq_GT)
+if(all(allele_freqs == c(0,0.5,0.05,0.25,0.3))){
+    print("Diploid freqs ok.")
+} else {
+    print("Diploid freqs broken!")
+}
+#Assuming haploid
+allele_freqs_hap = apply(NA_data,1,function(x) freq_GT(x,1))
+if(all(allele_freqs_hap == c(0,1,0.1,0.5,0.6))){
+    print("Diploid freqs ok.")
+} else {
+    print("Diploid freqs broken!")
+}
+```
+
+## Running plink on muc19 data
+
+using plink: `~/.my-bin/plink_mac_20250819/plink`
+
+```{bash}
+~/.my-bin/plink_mac_20250819/plink --vcf muc19_subsample.vcf --make-bed --out plink_muc19_data
+```
+
+## Running PCAngsd
+
+```{bash}
+pcangsd -p plink_muc19_data -o pcangsd_muc19_data --admix
+```

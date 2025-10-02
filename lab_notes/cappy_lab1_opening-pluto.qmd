@@ -1,0 +1,13 @@
+---
+title: "Popgen terminal notes"
+format: html
+editor: visual
+---
+
+# Julia
+
+opening julia: \> julia
+
+opening pluto: \> import Pluto; Pluto.run()
+
+closing julia: \> exit()
