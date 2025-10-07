@@ -1,0 +1,54 @@
+---
+title: "Short Assignment, Cappy"
+format: html
+editor: visual
+---
+
+Your first short assignment is to put together everything we have been learning so far into one workable function that will process a genotype table to output a series of population genetic results. Your function should:
+
+1.  Take a genotype matrix and a sample table as input.
+
+2.  Return individual site frequency across the genotype matrix for each population.
+
+    ```{r}
+    freq_GT = function(site,ploidy=2){
+      clean_site = na.omit(site)
+      total_sites = ploidy*length(site)
+      p = sum(clean_site)/total_sites
+      return(p)
+    }
+    ```
+
+3.  Return site sample heterozygosity for each population.
+
+    ```{r}
+    sample_het = function(site){
+      n = 2*length(site)
+      p = freq_GT(site)
+      h = n/(n-1)*2*p*(1-p)
+      return(h)
+      }
+    ```
+
+4.  Calculate all pairwise undefinedF_ST values for all pairs of samples.
+
+    ```{r}
+    fst_site = function(p1,p2,n1,n2){
+        f1 = n1/(n1+n2)
+        f2 = 1-f1
+        num = f1*p1*(1-p1)+f2*p2*(1-p2)
+        denom = (f1*p1+f2*p2)*(f1*(1-p1)+f2*(1-p2)) 
+        fst = 1-num/denom
+        return(fst)
+    }
+    ```
+
+5.  Return average r\^2 correlation within each population.
+
+    calculating r\^2: `cor_mat = cor(t(GT))`
+
+6.  Work on your test data set
+
+7.  The test data should have at least 3 populations, and at least 40 sites.
+
+The submission should therefore include four files minimum: Your source script including your processing functions. Your test script that checks if the function works correctly. The test data file as well as the file defining each population (something like `muc_samples.txt` in the lab).
