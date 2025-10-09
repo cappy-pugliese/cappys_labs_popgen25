@@ -1,4 +1,4 @@
-indivs pop
+indivs population
 IND_1 POP1
 IND_2 POP1
 IND_3 POP1
