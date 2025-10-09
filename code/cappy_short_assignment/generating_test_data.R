@@ -9,8 +9,8 @@ library(dplyr)
 
 ### population file 
 #numbering the individuals
-indivs <- rep(1:20)
-cat(my_string, "with R", sep=" =) ")
+indivs <- sprintf("IND_%d", 1:20)
+
 #Assigning the countries: first 50 patients to USA, the next 50 to UK and so on
 pop <- rep(c("POP1","POP2","POP3","POP4"), each=5)
 
