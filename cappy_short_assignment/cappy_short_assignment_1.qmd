@@ -107,17 +107,11 @@ Your first short assignment is to put together everything we have been learning 
 
     `calculating r\^2: cor_mat = cor(t(GT))`
 
-6.  Work on your test data set
+6.  [x] Work on your test data set
 
-```{r}
-# making test data set
-install.packages("charlatan")
-library("charlatan")
-```
+7.  [x] The test data should have at least 3 populations, and at least 40 sites.
 
-1.  The test data should have at least 3 populations, and at least 40 sites.
-
-### The submission should therefore include four files minimum: 
+### The submission should therefore include four files minimum:
 
 1.  Your source script including your processing functions.
 2.  Your test script that checks if the function works correctly.
