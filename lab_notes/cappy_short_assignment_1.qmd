@@ -24,7 +24,7 @@ Your first short assignment is to put together everything we have been learning 
         pos = as.numeric(gsub(".*:","",ids))
         summary_list = list("chr"=chr,"pos"=pos)
         summary_list = append(summary_list,list("sample_het"=apply(GT,1,sample_het)))
-  
+      
         pops = sort(unique(samples$population))
         #Get indices for each population
         idx_pops = lapply(pops,function(x) {
@@ -105,10 +105,21 @@ Your first short assignment is to put together everything we have been learning 
 
 5.  Return average r\^2 correlation within each population.
 
-    calculating r\^2: `cor_mat = cor(t(GT))`
+    `calculating r\^2: cor_mat = cor(t(GT))`
 
 6.  Work on your test data set
 
-7.  The test data should have at least 3 populations, and at least 40 sites.
+```{r}
+# making test data set
+install.packages("charlatan")
+library("charlatan")
+```
 
-The submission should therefore include four files minimum: Your source script including your processing functions. Your test script that checks if the function works correctly. The test data file as well as the file defining each population (something like `muc_samples.txt` in the lab).
+1.  The test data should have at least 3 populations, and at least 40 sites.
+
+### The submission should therefore include four files minimum: 
+
+1.  Your source script including your processing functions.
+2.  Your test script that checks if the function works correctly.
+3.  The test data file
+4.  file defining each population (something like `muc_samples.txt` in the lab).
