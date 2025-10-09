@@ -8,66 +8,6 @@ freq_GT = function(site,ploidy=1){
   return(p)
 }
 
-process_GT = function(GT,samples){
-    ids = gsub(":[A,T,C,G]*:[A,T,C,G]*","",rownames(GT))
-    chr = gsub(":.*","",ids)
-    pos = as.numeric(gsub(".*:","",ids))
-    summary_list = list("chr"=chr,"pos"=pos)
-    summary_list = append(summary_list,list("sample_het"=apply(GT,1,sample_het)))
-  
-    pops = sort(unique(samples$population))
-    #Get indices for each population
-    idx_pops = lapply(pops,function(x) {
-        which(colnames(GT) %in% samples$sample_id[which(samples$population == x)])
-    })
-    #Name them to make retrieval easier.
-    names(idx_pops) = pops
-    #Check for NAs per site per pop
-    obs_alleles = lapply(1:length(pops),function(x){
-        apply(GT[,idx_pops[[x]]],1,function(x) length(!is.na(x)))
-    })
-    names(obs_alleles) = pops
-    summary_list[["obs"]] = obs_alleles
-    # Now, let's get allele frequencies        
-    ps = lapply(1:length(pops),function(x) {
-        apply(GT[,idx_pops[[x]]],1,freq_GT)
-    })
-    names(ps) = pops
-    summary_list[["p"]] = ps
-    # Heterozygosities
-    hets = lapply(1:length(pops),function(x) {
-        apply(GT[,idx_pops[[x]]],1,sample_het)
-    })
-    names(hets) = pops
-    summary_list[["het"]] = hets
-    #All possible pairs of populations:
-    pop_pairs = combn(pops,2)
-    #Calculate fst for each
-    fst =lapply(1:dim(pop_pairs)[2],function(x) {
-        pop1 = pop_pairs[1,x]
-        pop2 = pop_pairs[2,x]
-        n1 = obs_alleles[[pop1]]
-        n2 = obs_alleles[[pop2]]
-        p1 = ps[[pop1]]
-        p2 = ps[[pop2]]
-        return(fst_site(p1,p2,n1,n2))
-    })
-    # Add names to make comparisons clear
-    names(fst) = sapply(1:dim(pop_pairs)[2],function(x) paste(pop_pairs[,x],collapse="-"))
-    #And dxy
-    dxy =lapply(1:dim(pop_pairs)[2],function(x){
-        p1 = ps[[pop_pairs[1,x]]]
-        p2 = ps[[pop_pairs[2,x]]]
-        return(dxy_site(p1,p2))
-    })
-    #Adding names to dxy as well
-    names(dxy) = sapply(1:dim(pop_pairs)[2],function(x) paste(pop_pairs[,x],collapse="-"))
-    #Don't forget to add these to the dataframe
-    summary_list[["fst"]] = fst
-    summary_list[["dxy"]] = dxy
-    return(summary_list)
-}
-
 #3. Return site sample heterozygosity for each population.
 sample_het = function(site){
   n = 2*length(site)
