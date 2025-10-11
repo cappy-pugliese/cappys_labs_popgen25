@@ -25,10 +25,11 @@ library(scales)
 
 ```{r}
 #getwd()
-vcf = read.vcfR("../PopGen25/labs/data/muc19_subsample.vcf")
+#setwd("/Users/caprinapugliese/Documents/School/Uconn/2024-26_Grad_School/2025-26_Year-2/popgen/labs/PopGen25/labs/data")
+vcf = read.vcfR("muc19_subsample.vcf.gz")
 GT = extract.gt(vcf,element="GT",as.numeric=TRUE)
 
-t_vcf = read.vcfR("../PopGen25/labs/data/test_data.vcf")
+t_vcf = read.vcfR("test_data.vcf")
 t_GT = extract.gt(vcf,element="GT",as.numeric=TRUE)
 ```
 
@@ -79,7 +80,7 @@ ggplot()+geom_histogram(aes(x=hets),bins=50)+
 ```
 
 ```{r}
-samples <- read_table("../PopGen25/labs/data/muc_samples.txt")
+samples <- read_table("muc_samples.txt")
 
 ceu_inds = samples$sample_id[which(samples$population == "CEU")]
 col_ids = which(colnames(GT) %in% ceu_inds)
