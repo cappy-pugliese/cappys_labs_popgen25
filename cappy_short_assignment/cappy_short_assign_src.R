@@ -1,5 +1,9 @@
 #1. Take a genotype matrix and a sample table as input.
 #2. Return individual site frequency across the genotype matrix for each population.
+#3. Return site sample heterozygosity for each population.
+#4. Calculate all pairwise undefinedF_ST values for all pairs of samples.
+
+#Individual allele freq and heterozygosity functions:
 
 freq_GT = function(site,ploidy=1){
   clean_site = na.omit(site)
@@ -8,7 +12,6 @@ freq_GT = function(site,ploidy=1){
   return(p)
 }
 
-#3. Return site sample heterozygosity for each population.
 sample_het = function(site){
   n = 2*length(site)
   p = freq_GT(site)
@@ -16,17 +19,71 @@ sample_het = function(site){
   return(h)
 }
 
-#4. Calculate all pairwise undefinedF_ST values for all pairs of samples.
-fst_site = function(p1,p2,n1,n2){
-    f1 = n1/(n1+n2)
-    f2 = 1-f1
-    num = f1*p1*(1-p1)+f2*p2*(1-p2)
-    denom = (f1*p1+f2*p2)*(f1*(1-p1)+f2*(1-p2)) 
-    fst = 1-num/denom
-    return(fst)
+# one large function:
+process_GT = function(GT,samples){
+  pops = sort(unique(samples$population))
+#Get indices for each population
+  idx_pops = lapply(pops,function(x) {
+    which(colnames(GT) %in% samples$indivs[which(samples$population == x)])
+  })
+  #Name them to make retrieval easier.
+  names(idx_pops) = pops
+  #Check for NAs per site per pop
+  obs_alleles = lapply(1:length(pops),function(x){
+    apply(GT[,idx_pops[[x]]],1,function(x) length(!is.na(x)))
+  })
+  names(obs_alleles) = pops
+  summary_list = list()
+  summary_list[["obs alleles"]] = obs_alleles
+  # Now, let's get allele frequencies        
+  ps = lapply(1:length(pops),function(x) {
+    apply(GT[,idx_pops[[x]]],1,freq_GT)
+  })
+  names(ps) = pops
+  summary_list[["allele freqs"]] = ps
+  # Heterozygosities
+  hets = lapply(1:length(pops),function(x) {
+    apply(GT[,idx_pops[[x]]],1,sample_het)
+  })
+  names(hets) = pops
+  summary_list[["heterozygosities"]] = hets
+  #All possible pairs of populations:
+  pop_pairs = combn(pops,2)
+  #Calculate fst for each
+  fst =lapply(1:dim(pop_pairs)[2],function(x) {
+    pop1 = pop_pairs[1,x]
+    pop2 = pop_pairs[2,x]
+    n1 = obs_alleles[[pop1]]
+    n2 = obs_alleles[[pop2]]
+    p1 = ps[[pop1]]
+    p2 = ps[[pop2]]
+    return(fst_site(p1,p2,n1,n2))
+  })
+  #Add names to make comparisons clear
+  names(fst) = sapply(1:dim(pop_pairs)[2],function(x) paste(pop_pairs[,x],collapse="-"))
+  summary_list[["Fst"]] = fst
+  return(summary_list)
 }
 
 #5. Return average r^2 correlation within each population.
-cor_mat = function(GT){
-    cor(t(GT))
+## I'll be honest, I had Chatgpt help me generate this code because I had no clue what I was doing
+cor_mat = cor(GT, use = "pairwise.complete.obs")
+pops <- unique(samples$population)
+r2_means <- numeric(length(pops))
+names(r2_means) <- pops
+
+for (pop in pops) {
+  # get individuals in this population
+  inds <- samples$indivs[samples$population == pop]
+  
+  # subset correlation matrix for this population
+  sub_mat <- cor_mat[inds, inds]
+  
+  # square the correlations to get r²
+  r2_vals <- sub_mat[upper.tri(sub_mat)]^2
+  
+  # take the mean (ignoring NAs)
+  r2_means[pop] <- mean(r2_vals, na.rm = TRUE)
 }
+
+r2_means

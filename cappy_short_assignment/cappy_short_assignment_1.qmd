@@ -30,14 +30,12 @@ Your first short assignment is to put together everything we have been learning 
         return(fst)
     }
 
-    pops = sort(unique(samples$population)) #works
-      
+    process_GT = function(GT,samples){
+      pops = sort(unique(samples$population))
     #Get indices for each population
       idx_pops = lapply(pops,function(x) {
-        which(colnames(GT) %in% samples$sample_id[which(samples$population == x)])
+        which(colnames(GT) %in% samples$indivs[which(samples$population == x)])
       })
-
-
       #Name them to make retrieval easier.
       names(idx_pops) = pops
       #Check for NAs per site per pop
@@ -45,6 +43,7 @@ Your first short assignment is to put together everything we have been learning 
         apply(GT[,idx_pops[[x]]],1,function(x) length(!is.na(x)))
       })
       names(obs_alleles) = pops
+      summary_list = list()
       summary_list[["obs"]] = obs_alleles
       # Now, let's get allele frequencies        
       ps = lapply(1:length(pops),function(x) {
@@ -72,14 +71,8 @@ Your first short assignment is to put together everything we have been learning 
       })
       #Add names to make comparisons clear
       names(fst) = sapply(1:dim(pop_pairs)[2],function(x) paste(pop_pairs[,x],collapse="-"))
-      #And dxy
-      dxy =lapply(1:dim(pop_pairs)[2],function(x){
-        p1 = ps[[pop_pairs[1,x]]]
-        p2 = ps[[pop_pairs[2,x]]]
-        return(dxy_site(p1,p2))
-      })
-    # need to catagorize subpopulations
-
+      return(summary_list)
+    }
     ```
 
 5.  Return average r\^2 correlation within each population.
