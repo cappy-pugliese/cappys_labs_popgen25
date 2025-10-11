@@ -1,8 +1,5 @@
 #setwd("/Users/caprinapugliese/Documents/School/Uconn/2024-26_Grad_School/2025-26_Year-2/popgen/labs/cappys_labs_popgen25/cappy_short_assignment")
 
-# load libraries
-library(dplyr)
-
 ######## generating the data ########
 
 ### population file ###
@@ -28,13 +25,10 @@ allele_data <- t(replicate(length(indivs), rbinom(n_sites, 1, 0.5)))
 # 0.5 in rbinom is the probability of recieving a 1 vs a 0
 
 # putting it all together
-fake_data <- data.frame(row.names = indivs, allele_data)
-
-rename_with(fake_data, .cols = everything(), ...)
-
+fake_data <- data.frame(indivs, allele_data)
 
 #creating the file
-write.csv(fake_data,file="25_10-09_short_assign_fake-data.csv",quote=FALSE)
+write.csv(fake_data,file="25_10-09_short_assign_fake-data.csv",row.names=FALSE,quote=FALSE)
 
 
 ### adding missing data ###
@@ -49,6 +43,6 @@ for (ind in seq_len(nrow(allele_data))) {
 }
 
 # putting it into one dataframe
-missing_data <- data.frame(row.names = indivs, allele_data)
+missing_data <- data.frame(indivs, allele_data)
 
-write.csv(missing_data,file="25_10-09_short_assign_fake_data_w_NAs.csv",quote=FALSE)
+write.csv(missing_data,file="25_10-09_short_assign_fake_data_w_NAs.csv",row.names=FALSE,quote=FALSE)
