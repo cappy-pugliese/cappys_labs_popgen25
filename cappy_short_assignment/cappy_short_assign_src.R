@@ -57,33 +57,32 @@ process_GT = function(GT,samples){
     n2 = obs_alleles[[pop2]]
     p1 = ps[[pop1]]
     p2 = ps[[pop2]]
-    return(fst_site(p1,p2,n1,n2))
   })
-  #Add names to make comparisons clear
+  # Add names to make comparisons clear
   names(fst) = sapply(1:dim(pop_pairs)[2],function(x) paste(pop_pairs[,x],collapse="-"))
   summary_list[["Fst"]] = fst
-  return(summary_list)
-}
+  
+  #5. Return average r^2 correlation within each population.
+  ## I'll be honest, I had Chatgpt help me generate this code because I had no clue what I was doing
+  cor_mat = cor(GT, use = "pairwise.complete.obs")
+  pops <- unique(samples$population)
+  r2_means <- numeric(length(pops))
+  names(r2_means) <- pops
 
-#5. Return average r^2 correlation within each population.
-## I'll be honest, I had Chatgpt help me generate this code because I had no clue what I was doing
-cor_mat = cor(GT, use = "pairwise.complete.obs")
-pops <- unique(samples$population)
-r2_means <- numeric(length(pops))
-names(r2_means) <- pops
-
-for (pop in pops) {
+  for (pop in pops) {
   # get individuals in this population
-  inds <- samples$indivs[samples$population == pop]
+    inds <- samples$indivs[samples$population == pop]
   
   # subset correlation matrix for this population
-  sub_mat <- cor_mat[inds, inds]
+    sub_mat <- cor_mat[inds, inds]
   
   # square the correlations to get r²
-  r2_vals <- sub_mat[upper.tri(sub_mat)]^2
+    r2_vals <- sub_mat[upper.tri(sub_mat)]^2
   
   # take the mean (ignoring NAs)
-  r2_means[pop] <- mean(r2_vals, na.rm = TRUE)
+    r2_means[pop] <- mean(r2_vals, na.rm = TRUE)
+  }
+  summary_list[["r2_means"]] <- r2_means
+  
+  return(summary_list)
 }
-
-r2_means
