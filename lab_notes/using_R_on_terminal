@@ -1,0 +1,6 @@
+loading in R:
+> module load R/4.2.2
+> R
+
+exiting R:
+> q()

@@ -91,6 +91,17 @@ using plink: `~/.my-bin/plink_mac_20250819/plink`
 
 ## Running PCAngsd
 
-```{bash}
-pcangsd -p plink_muc19_data -o pcangsd_muc19_data --admix
+-   created a script file
+
+-   many head bangings were had trying to get pcangsd to run on the cluster
+
+```{r}
+library(readr)
+setwd("/Users/caprinapugliese/Documents/School/Uconn/2024-26_Grad_School/2025-26_Year-2/popgen/labs/cappys_labs_popgen25/data/02_lab5")
+
+admix = read_table("pcangsd_muc19_data.admix.16.Q.npy")
+# Error in `guess_header_()`:
+# ! embedded nul in string: '\x93NUMPY\001\0v\0{'descr':'
+# this might not be the right file to read in, its a .npy
+head(admix)
 ```
