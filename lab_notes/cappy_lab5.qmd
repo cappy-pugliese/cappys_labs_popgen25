@@ -96,12 +96,38 @@ using plink: `~/.my-bin/plink_mac_20250819/plink`
 -   many head bangings were had trying to get pcangsd to run on the cluster
 
 ```{r}
+#install.packages("reticulate")
+library("reticulate")
+# to help read .npy file
+np <- import("numpy")
+# good for combining python with R
 library(readr)
+library(tidyverse)
+library(ggplot2)
+library(vcfR)
+
 setwd("/Users/caprinapugliese/Documents/School/Uconn/2024-26_Grad_School/2025-26_Year-2/popgen/labs/cappys_labs_popgen25/data/02_lab5")
 
-admix = read_table("pcangsd_muc19_data.admix.16.Q.npy")
-# Error in `guess_header_()`:
-# ! embedded nul in string: '\x93NUMPY\001\0v\0{'descr':'
-# this might not be the right file to read in, its a .npy
+admix <- np$load(file = "pcangsd_muc19_data.admix.16.Q.npy",allow_pickle=FALSE)
+k <- np$load(file = "pcangsd_muc19_data.admix.16.Q.npy",allow_pickle=FALSE)
+
 head(admix)
+
+
+
+########## making the graph ##########
+names(admix) = c("pop1","pop2") #Give some putative names for the populations, depening on their number
+
+for (n in 1:16) {
+    print ("")
+}
+
+admix= as.data.frame(admix)
+admix$ind =  ??? #How can you name each individual (hint: the vcf has the names of each of these)
+#Pivot to long format
+df_long = pivot_longer(admix,1:16,names_to="Pop",values_to="admix")
+
+ggplot(df_long,aes(x=ind,y=admix,fill=Pop))+geom_col(col=NA)
 ```
+
+<https://rstudio.github.io/reticulate/>
