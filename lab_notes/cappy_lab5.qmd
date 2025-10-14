@@ -109,23 +109,35 @@ library(vcfR)
 setwd("/Users/caprinapugliese/Documents/School/Uconn/2024-26_Grad_School/2025-26_Year-2/popgen/labs/cappys_labs_popgen25/data/02_lab5")
 
 admix <- np$load(file = "pcangsd_muc19_data.admix.16.Q.npy",allow_pickle=FALSE)
-k <- np$load(file = "pcangsd_muc19_data.admix.16.Q.npy",allow_pickle=FALSE)
+k <- 16
 
 head(admix)
 
 
 
 ########## making the graph ##########
+paste("pop",1:k, sep = "")
 names(admix) = c("pop1","pop2") #Give some putative names for the populations, depening on their number
 
-for (n in 1:16) {
-    print ("")
+pops <- c()
+
+for (n in 1:k) {
+    pops <- c(pops, paste0("pop", n))
 }
+
+names(admix) <- pops
 
 admix= as.data.frame(admix)
 admix$ind =  ??? #How can you name each individual (hint: the vcf has the names of each of these)
+
+setwd("/Users/caprinapugliese/Documents/School/Uconn/2024-26_Grad_School/2025-26_Year-2/popgen/labs/cappys_labs_popgen25/data/01_muc19_data")
+vcf = read.vcfR("muc19_subsample.vcf.gz")
+GT = extract.gt(vcf,element="GT",as.numeric=TRUE)
+
+
+
 #Pivot to long format
-df_long = pivot_longer(admix,1:16,names_to="Pop",values_to="admix")
+df_long = pivot_longer(admix,1:k,names_to="Pop",values_to="admix")
 
 ggplot(df_long,aes(x=ind,y=admix,fill=Pop))+geom_col(col=NA)
 ```
