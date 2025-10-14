@@ -125,7 +125,7 @@ for (n in 1:k) {
     pops <- c(pops, paste0("pop", n))
 }
 
-names(admix) <- pops
+colnames(admix) <- pops
 
 admix= as.data.frame(admix)
 admix$ind =  ??? #How can you name each individual (hint: the vcf has the names of each of these)
@@ -134,10 +134,12 @@ setwd("/Users/caprinapugliese/Documents/School/Uconn/2024-26_Grad_School/2025-26
 vcf = read.vcfR("muc19_subsample.vcf.gz")
 GT = extract.gt(vcf,element="GT",as.numeric=TRUE)
 
-
+GT <- as.data.frame(GT)
+admix$ind = colnames(GT)
 
 #Pivot to long format
 df_long = pivot_longer(admix,1:k,names_to="Pop",values_to="admix")
+#this is not working, i think its because I made my table using different code and now everything is fucky
 
 ggplot(df_long,aes(x=ind,y=admix,fill=Pop))+geom_col(col=NA)
 ```
