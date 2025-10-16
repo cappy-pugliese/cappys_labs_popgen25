@@ -17,3 +17,9 @@ data/03_lab5/01_plink/plink_muc19_data.log
 data/03_lab5/01_plink/plink_muc19_data.nosex
 .DS_Store
 data/.DS_Store
+cappy_short_assignment/25_10-09_short_assign_fake_data_w_NAs.csv
+cappy_short_assignment/25_10-09_short_assign_fake-data.csv
+cappy_short_assignment/25_10-09_short_assign_pop-file.csv
+cappy_short_assignment/cappy_generating_test_data.R
+cappy_short_assignment/cappy_short_assign_src.R
+cappy_short_assignment/cappy_test_script.R
