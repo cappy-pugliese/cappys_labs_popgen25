@@ -15,3 +15,5 @@ data/03_lab5/01_plink/plink_muc19_data.bim
 data/03_lab5/01_plink/plink_muc19_data.fam
 data/03_lab5/01_plink/plink_muc19_data.log
 data/03_lab5/01_plink/plink_muc19_data.nosex
+.DS_Store
+data/.DS_Store
