@@ -19,3 +19,12 @@
     cd utils
     make
     ```
+
+-   make graph from .psmc
+
+```{bash}
+module load gnuplot/5.2.2
+${psmcdir}/utils/psmc_plot.pl ${sample} ${sample}.psmc
+```
+
+-   will then need to bring .psmc onto laptop, and can then use the texshop app to read and save the graph as a pdf
